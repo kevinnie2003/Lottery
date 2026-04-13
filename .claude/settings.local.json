@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(pnpm --version)",
+      "WebSearch",
+      "Bash(npm create:*)",
+      "Bash(npx:*)",
+      "Bash(cp -r /Users/mingxuan.nie/Desktop/LotteryTemp/* /Users/mingxuan.nie/Desktop/Lottery/)",
+      "Bash(cp /Users/mingxuan.nie/Desktop/LotteryTemp/.gitignore /Users/mingxuan.nie/Desktop/Lottery/)",
+      "Bash(rm -rf /Users/mingxuan.nie/Desktop/LotteryTemp)",
+      "Bash(npm install:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(curl -s http://localhost:5173/)"
+    ]
+  }
+}
