@@ -2,7 +2,7 @@ import { useCallback, useRef, useEffect } from 'react';
 import { useLotteryStore } from '../../hooks/useLotteryStore';
 import { useSlotMachine } from '../../hooks/useSlotMachine';
 import { useSoundEffects } from '../../hooks/useSoundEffects';
-import { PRIZE_VISUAL } from '../../constants/prizes';
+import { PRIZE_VISUAL, PRIZE_ORDER } from '../../constants/prizes';
 import { PrizeLevelSelector } from './PrizeLevelSelector';
 import { SlotMachine } from './SlotMachine';
 import { DrawButton } from './DrawButton';
@@ -72,7 +72,16 @@ export function LotteryPage() {
     reset();
     setDrawPhase('idle');
     useLotteryStore.setState({ currentDrawWinners: [] });
-  }, [reset, setDrawPhase]);
+
+    // Auto-advance to the next incomplete level if current is done
+    const state = useLotteryStore.getState();
+    if (state.isLevelComplete(currentLevel)) {
+      const nextLevel = PRIZE_ORDER.find((l) => !state.isLevelComplete(l));
+      if (nextLevel) {
+        state.setCurrentPrizeLevel(nextLevel);
+      }
+    }
+  }, [reset, setDrawPhase, currentLevel]);
 
   const handleUndo = useCallback(() => {
     undoLastDraw();
