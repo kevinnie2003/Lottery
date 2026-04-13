@@ -11,7 +11,9 @@
       "Bash(rm -rf /Users/mingxuan.nie/Desktop/LotteryTemp)",
       "Bash(npm install:*)",
       "WebFetch(domain:localhost)",
-      "Bash(curl -s http://localhost:5173/)"
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
     ]
   }
 }

@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import type { Employee, PrizeLevel } from '../types';
-import { PRIZE_CONFIG } from '../constants/prizes';
+import { PRIZE_VISUAL } from '../constants/prizes';
 import { selectRandomWinners, getRandomEmployee } from '../utils/random';
 
 export interface ColumnState {
@@ -13,6 +13,7 @@ export interface ColumnState {
 interface UseSlotMachineOptions {
   eligible: Employee[];
   prizeLevel: PrizeLevel;
+  winnerCount: number;
   onTick?: () => void;
   onColumnStop?: (index: number) => void;
   onAllStopped?: (winners: Employee[]) => void;
@@ -21,12 +22,13 @@ interface UseSlotMachineOptions {
 export function useSlotMachine({
   eligible,
   prizeLevel,
+  winnerCount,
   onTick,
   onColumnStop,
   onAllStopped,
 }: UseSlotMachineOptions) {
-  const config = PRIZE_CONFIG[prizeLevel];
-  const count = Math.min(config.count, eligible.length);
+  const visual = PRIZE_VISUAL[prizeLevel];
+  const count = Math.min(winnerCount, eligible.length);
 
   const tickCounter = useRef(0);
 
@@ -66,7 +68,7 @@ export function useSlotMachine({
       }))
     );
 
-    const { spinDuration, decelDuration } = config;
+    const { spinDuration, decelDuration } = visual;
     const stagger = 800;
 
     // For each column, run the spin + decel sequence
@@ -175,7 +177,7 @@ export function useSlotMachine({
 
       doDecel();
     }
-  }, [eligible, count, config, onTick, onColumnStop, onAllStopped]);
+  }, [eligible, count, visual, onTick, onColumnStop, onAllStopped]);
 
   const reset = useCallback(() => {
     cleanup();

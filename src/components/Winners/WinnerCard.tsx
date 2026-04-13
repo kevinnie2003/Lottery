@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import type { Winner } from '../../types';
-import { PRIZE_CONFIG } from '../../constants/prizes';
+import { PRIZE_VISUAL } from '../../constants/prizes';
 
 interface WinnerCardProps {
   winner: Winner;
@@ -8,7 +8,7 @@ interface WinnerCardProps {
 }
 
 export function WinnerCard({ winner, index }: WinnerCardProps) {
-  const config = PRIZE_CONFIG[winner.prizeLevel];
+  const config = PRIZE_VISUAL[winner.prizeLevel];
 
   return (
     <motion.div

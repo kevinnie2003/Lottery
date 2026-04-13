@@ -1,7 +1,7 @@
 import { FileUploader } from './FileUploader';
 import { EmployeeTable } from './EmployeeTable';
+import { PrizeCountEditor } from './PrizeCountEditor';
 import { useLotteryStore } from '../../hooks/useLotteryStore';
-import { TOTAL_WINNERS } from '../../constants/prizes';
 import type { Employee } from '../../types';
 
 export function SetupPage() {
@@ -9,9 +9,11 @@ export function SetupPage() {
   const setEmployees = useLotteryStore((s) => s.setEmployees);
   const clearEmployees = useLotteryStore((s) => s.clearEmployees);
   const setPage = useLotteryStore((s) => s.setPage);
+  const getTotalWinners = useLotteryStore((s) => s.getTotalWinners);
+
+  const totalWinners = getTotalWinners();
 
   const handleUpload = (emps: Employee[]) => {
-    // Don't navigate yet, let them review
     useLotteryStore.setState({ employees: emps });
   };
 
@@ -20,7 +22,7 @@ export function SetupPage() {
     setPage('lottery');
   };
 
-  const hasEnough = employees.length >= TOTAL_WINNERS;
+  const hasEnough = employees.length >= totalWinners;
 
   return (
     <div className="page">
@@ -32,12 +34,20 @@ export function SetupPage() {
       </p>
 
       {employees.length === 0 ? (
-        <FileUploader onUpload={handleUpload} />
+        <>
+          <PrizeCountEditor />
+          <div style={{ marginTop: '32px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <FileUploader onUpload={handleUpload} />
+          </div>
+        </>
       ) : (
         <>
-          <EmployeeTable employees={employees} />
+          <PrizeCountEditor />
+          <div style={{ marginTop: '24px' }}>
+            <EmployeeTable employees={employees} />
+          </div>
 
-          {!hasEnough && (
+          {!hasEnough && totalWinners > 0 && (
             <div
               style={{
                 marginTop: '16px',
@@ -50,7 +60,7 @@ export function SetupPage() {
               }}
             >
               Warning: You have {employees.length} employees but need at least{' '}
-              {TOTAL_WINNERS} to fill all prize slots (1 Grand + 3 Second + 5 Third).
+              {totalWinners} to fill all prize slots.
             </div>
           )}
 

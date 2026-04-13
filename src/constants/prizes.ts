@@ -1,9 +1,16 @@
-import type { PrizeConfig, PrizeLevel } from '../types';
+import type { PrizeLevel } from '../types';
 
-export const PRIZE_CONFIG: Record<PrizeLevel, PrizeConfig> = {
+export interface PrizeVisualConfig {
+  label: string;
+  color: string;
+  dimColor: string;
+  spinDuration: number;
+  decelDuration: number;
+}
+
+export const PRIZE_VISUAL: Record<PrizeLevel, PrizeVisualConfig> = {
   grand: {
     label: 'Grand Prize',
-    count: 1,
     color: '#FFD700',
     dimColor: 'rgba(255, 215, 0, 0.15)',
     spinDuration: 3000,
@@ -11,7 +18,6 @@ export const PRIZE_CONFIG: Record<PrizeLevel, PrizeConfig> = {
   },
   second: {
     label: 'Second Prize',
-    count: 3,
     color: '#C0C0C0',
     dimColor: 'rgba(192, 192, 192, 0.15)',
     spinDuration: 2500,
@@ -19,17 +25,17 @@ export const PRIZE_CONFIG: Record<PrizeLevel, PrizeConfig> = {
   },
   third: {
     label: 'Third Prize',
-    count: 5,
     color: '#CD7F32',
     dimColor: 'rgba(205, 127, 50, 0.15)',
     spinDuration: 2000,
     decelDuration: 2000,
   },
-} as const;
+};
+
+export const DEFAULT_PRIZE_COUNTS: Record<PrizeLevel, number> = {
+  grand: 1,
+  second: 3,
+  third: 5,
+};
 
 export const PRIZE_ORDER: PrizeLevel[] = ['third', 'second', 'grand'];
-
-export const TOTAL_WINNERS = Object.values(PRIZE_CONFIG).reduce(
-  (sum, cfg) => sum + cfg.count,
-  0
-);

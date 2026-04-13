@@ -1,12 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Employee, Winner, DrawHistoryEntry, PrizeLevel, Page, DrawPhase } from '../types';
-import { PRIZE_CONFIG } from '../constants/prizes';
+import { DEFAULT_PRIZE_COUNTS } from '../constants/prizes';
 
 interface LotteryState {
   // Navigation
   currentPage: Page;
   setPage: (page: Page) => void;
+
+  // Prize configuration
+  prizeCounts: Record<PrizeLevel, number>;
+  setPrizeCount: (level: PrizeLevel, count: number) => void;
 
   // Employee data
   employees: Employee[];
@@ -35,6 +39,7 @@ interface LotteryState {
   getRemainingSlots: (level: PrizeLevel) => number;
   isLevelComplete: (level: PrizeLevel) => boolean;
   isAllComplete: () => boolean;
+  getTotalWinners: () => number;
 }
 
 export const useLotteryStore = create<LotteryState>()(
@@ -43,6 +48,12 @@ export const useLotteryStore = create<LotteryState>()(
       // Navigation
       currentPage: 'setup',
       setPage: (page) => set({ currentPage: page }),
+
+      // Prize configuration
+      prizeCounts: { ...DEFAULT_PRIZE_COUNTS },
+      setPrizeCount: (level, count) => set((state) => ({
+        prizeCounts: { ...state.prizeCounts, [level]: Math.max(0, count) },
+      })),
 
       // Employee data
       employees: [],
@@ -115,6 +126,7 @@ export const useLotteryStore = create<LotteryState>()(
         currentPrizeLevel: 'third',
         drawPhase: 'idle',
         currentDrawWinners: [],
+        prizeCounts: { ...DEFAULT_PRIZE_COUNTS },
       }),
 
       // Selectors
@@ -131,7 +143,7 @@ export const useLotteryStore = create<LotteryState>()(
       getRemainingSlots: (level) => {
         const state = get();
         const drawn = state.winners.filter((w) => w.prizeLevel === level).length;
-        return PRIZE_CONFIG[level].count - drawn;
+        return state.prizeCounts[level] - drawn;
       },
 
       isLevelComplete: (level) => {
@@ -146,6 +158,11 @@ export const useLotteryStore = create<LotteryState>()(
           state.isLevelComplete('third')
         );
       },
+
+      getTotalWinners: () => {
+        const state = get();
+        return state.prizeCounts.grand + state.prizeCounts.second + state.prizeCounts.third;
+      },
     }),
     {
       name: 'lottery-storage',
@@ -155,6 +172,7 @@ export const useLotteryStore = create<LotteryState>()(
         drawHistory: state.drawHistory,
         currentPrizeLevel: state.currentPrizeLevel,
         currentPage: state.currentPage,
+        prizeCounts: state.prizeCounts,
       }),
     }
   )

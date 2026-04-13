@@ -2,7 +2,7 @@ import { useCallback, useRef, useEffect } from 'react';
 import { useLotteryStore } from '../../hooks/useLotteryStore';
 import { useSlotMachine } from '../../hooks/useSlotMachine';
 import { useSoundEffects } from '../../hooks/useSoundEffects';
-import { PRIZE_CONFIG } from '../../constants/prizes';
+import { PRIZE_VISUAL } from '../../constants/prizes';
 import { PrizeLevelSelector } from './PrizeLevelSelector';
 import { SlotMachine } from './SlotMachine';
 import { DrawButton } from './DrawButton';
@@ -22,9 +22,10 @@ export function LotteryPage() {
   const currentDrawWinners = useLotteryStore((s) => s.currentDrawWinners);
   const isLevelComplete = useLotteryStore((s) => s.isLevelComplete);
   const isAllComplete = useLotteryStore((s) => s.isAllComplete);
+  const prizeCounts = useLotteryStore((s) => s.prizeCounts);
 
   const eligible = getEligibleEmployees();
-  const config = PRIZE_CONFIG[currentLevel];
+  const visual = PRIZE_VISUAL[currentLevel];
 
   const { startSpinSound, playTick, playFanfare } = useSoundEffects();
 
@@ -44,6 +45,7 @@ export function LotteryPage() {
   const { columns, start, reset } = useSlotMachine({
     eligible,
     prizeLevel: currentLevel,
+    winnerCount: prizeCounts[currentLevel],
     onTick: playTick,
     onAllStopped,
   });
@@ -85,7 +87,7 @@ export function LotteryPage() {
     <ScreenShake shake={isRevealed && isGrand}>
       <SpotlightEffect
         show={isRevealed}
-        color={config.color}
+        color={visual.color}
       />
       <ConfettiEffect level={currentLevel} trigger={isRevealed} />
 
@@ -94,14 +96,10 @@ export function LotteryPage() {
           className="page-title"
           style={{
             marginTop: '20px',
-            background: `linear-gradient(135deg, ${config.color}, #fff)`,
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-            WebkitTextFillColor: 'transparent',
+            color: visual.color,
           }}
         >
-          {config.label}
+          {visual.label}
         </h1>
 
         <PrizeLevelSelector disabled={drawPhase !== 'idle'} />
@@ -118,7 +116,7 @@ export function LotteryPage() {
           </div>
         ) : (
           <>
-            <SlotMachine columns={columns} color={config.color} />
+            <SlotMachine columns={columns} color={visual.color} />
 
             <div style={{ marginTop: '24px' }}>
               {drawPhase !== 'revealed' && (

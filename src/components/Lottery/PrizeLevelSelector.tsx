@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import type { PrizeLevel } from '../../types';
-import { PRIZE_CONFIG, PRIZE_ORDER } from '../../constants/prizes';
+import { PRIZE_VISUAL, PRIZE_ORDER } from '../../constants/prizes';
 import { useLotteryStore } from '../../hooks/useLotteryStore';
 
 interface PrizeLevelSelectorProps {
@@ -12,6 +12,7 @@ export function PrizeLevelSelector({ disabled }: PrizeLevelSelectorProps) {
   const setLevel = useLotteryStore((s) => s.setCurrentPrizeLevel);
   const getRemainingSlots = useLotteryStore((s) => s.getRemainingSlots);
   const isLevelComplete = useLotteryStore((s) => s.isLevelComplete);
+  const prizeCounts = useLotteryStore((s) => s.prizeCounts);
 
   return (
     <div
@@ -24,7 +25,8 @@ export function PrizeLevelSelector({ disabled }: PrizeLevelSelectorProps) {
       }}
     >
       {PRIZE_ORDER.map((level: PrizeLevel) => {
-        const config = PRIZE_CONFIG[level];
+        const visual = PRIZE_VISUAL[level];
+        const count = prizeCounts[level];
         const remaining = getRemainingSlots(level);
         const complete = isLevelComplete(level);
         const isSelected = currentLevel === level;
@@ -39,9 +41,9 @@ export function PrizeLevelSelector({ disabled }: PrizeLevelSelectorProps) {
             style={{
               padding: '16px 28px',
               borderRadius: 'var(--radius-md)',
-              border: `2px solid ${isSelected ? config.color : complete ? 'var(--border)' : 'var(--border)'}`,
+              border: `2px solid ${isSelected ? visual.color : 'var(--border)'}`,
               background: isSelected
-                ? `${config.color}20`
+                ? `${visual.color}20`
                 : complete
                   ? 'var(--bg-secondary)'
                   : 'var(--bg-card)',
@@ -55,11 +57,11 @@ export function PrizeLevelSelector({ disabled }: PrizeLevelSelectorProps) {
               style={{
                 fontSize: '16px',
                 fontWeight: 700,
-                color: isSelected ? config.color : complete ? 'var(--text-muted)' : 'var(--text-primary)',
+                color: isSelected ? visual.color : complete ? 'var(--text-muted)' : 'var(--text-primary)',
                 marginBottom: '4px',
               }}
             >
-              {config.label}
+              {visual.label}
             </div>
             <div
               style={{
@@ -67,7 +69,7 @@ export function PrizeLevelSelector({ disabled }: PrizeLevelSelectorProps) {
                 color: complete ? 'var(--text-muted)' : 'var(--text-secondary)',
               }}
             >
-              {complete ? 'Complete' : `${remaining} of ${config.count} remaining`}
+              {complete ? 'Complete' : `${remaining} of ${count} remaining`}
             </div>
           </motion.button>
         );

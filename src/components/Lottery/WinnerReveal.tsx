@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import type { Employee, PrizeLevel } from '../../types';
-import { PRIZE_CONFIG } from '../../constants/prizes';
+import { PRIZE_VISUAL } from '../../constants/prizes';
 
 interface WinnerRevealProps {
   winners: Employee[];
@@ -12,7 +12,7 @@ interface WinnerRevealProps {
 
 export function WinnerReveal({ winners, prizeLevel, onContinue, onUndo }: WinnerRevealProps) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const config = PRIZE_CONFIG[prizeLevel];
+  const config = PRIZE_VISUAL[prizeLevel];
 
   return (
     <motion.div

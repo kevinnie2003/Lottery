@@ -24,7 +24,6 @@ export interface DrawHistoryEntry {
 
 export interface PrizeConfig {
   label: string;
-  count: number;
   color: string;
   dimColor: string;
   spinDuration: number;

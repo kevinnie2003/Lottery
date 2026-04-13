@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# Annual Meeting Lottery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A browser-based lottery tool for company annual meetings. Upload an employee list, configure prize levels, and draw winners with slot-machine animations, confetti effects, and sound.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Slot machine animation** — names scroll and decelerate to reveal winners, with staggered column stops for suspense
+- **3 prize levels** — Grand Prize, Second Prize, Third Prize with escalating visual effects (confetti, spotlight, fireworks, screen shake)
+- **Configurable prize counts** — adjust the number of winners per prize level before starting
+- **CSV / Excel upload** — drag-and-drop import of employee lists (.csv, .xlsx, .xls) with flexible column matching (supports English and Chinese headers)
+- **No repeat winners** — drawn employees are excluded from future draws automatically
+- **Undo / re-draw** — reverse the last draw with a confirmation prompt
+- **Winners board** — view all winners grouped by prize level
+- **Fullscreen mode** — presentation-optimized display for projectors
+- **LocalStorage persistence** — state survives page refresh; no backend required
+- **Sound effects** — drumroll during draw, fanfare on reveal (bring your own audio files)
 
-## React Compiler
+## Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open http://localhost:5173 in your browser.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Usage
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **Setup** — adjust prize counts (default: 1 Grand, 3 Second, 5 Third), then upload a CSV/Excel file with employee data
+2. **Lottery** — select a prize level, click "Start Draw", watch the slot machine animation reveal winners
+3. **Winners** — view the winners board at any time via the nav bar
+
+### CSV Format
+
+The file should have columns for employee name, ID, and optionally department. Column headers are matched flexibly:
+
+| Name | Employee ID | Department |
+|------|-------------|------------|
+| Alice Chen | E001 | Engineering |
+| Bob Zhang | E002 | Marketing |
+
+Supported header aliases: `name` / `姓名`, `id` / `employee id` / `工号`, `department` / `部门`
+
+### Sound Files
+
+Place MP3 files in `public/sounds/` to enable audio:
+
+- `drumroll.mp3` — looping drumroll during the draw
+- `tick.mp3` — click sound on each name change
+- `fanfare-third.mp3` — Third Prize celebration
+- `fanfare-second.mp3` — Second Prize celebration
+- `fanfare-grand.mp3` — Grand Prize celebration
+
+The app works without sound files — audio is optional.
+
+## Tech Stack
+
+- React 19 + TypeScript
+- Vite
+- Zustand (state management + LocalStorage persistence)
+- Motion (animations)
+- canvas-confetti (celebration effects)
+- PapaParse + SheetJS (CSV/Excel parsing)
+- Howler.js (audio)
+
+## Build
+
+```bash
+npm run build     # outputs to dist/
+npm run preview   # preview the production build locally
 ```
+
+The output is a static site — deploy to any static hosting (Netlify, Vercel, S3, etc.) with no server required.
